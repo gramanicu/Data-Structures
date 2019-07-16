@@ -22,7 +22,7 @@ build: $(OBJ)
 	$(CC) -o $@ -c $< $(CFLAGS) 
 
 # Executes the binary
-run: build
+run: clean build
 	./$(EXE)
 
 # Deletes the binary and object files
@@ -31,7 +31,7 @@ clean:
 	echo "Deleted the binary and object files"
 
 # Automatic coding style, in my personal style
-beauty-development:
+beauty:
 	clang-format -i -style=file */*.cpp
 	clang-format -i -style=file */*.h
 
