@@ -1,5 +1,7 @@
 #include "../headers/LinkedList.h"
 
+// Test for the LinkedList
+
 int main() {
     LinkedList<int> list;
     list.addFirst(3);

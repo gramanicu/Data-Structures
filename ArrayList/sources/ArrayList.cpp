@@ -1,5 +1,7 @@
 #include "../headers/ArrayList.h"
 
+// Test for the ArrayList
+
 int main() {
     ArrayList<int> list(3);
 
@@ -8,14 +10,17 @@ int main() {
     }
 
     std::cout << list << "\n";
-    list.removeLast();
+
+    ArrayList<int> other = list;
+    std::cout << other << "\n";
+
+    for (int i = 0; i < 9; i++) {
+        list.removeLast();
+    }
+
     std::cout << list << "\n";
-    list.removeFirst();
-    std::cout << list << "\n";
-    list.addFirst(10);
-    std::cout << list << "\n";
-    list.addLast(92);
-    std::cout << list << "\n";
+    std::cout << other << "\n";
+
 
     return 0;
 }

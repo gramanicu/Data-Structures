@@ -1,8 +1,19 @@
-#include <iostream>
-
 #ifndef LINKEDLIST_H_
 #define LINKEDLIST_H_
 
+/*  This is a implementation of an double linked list. The data is
+    not stored in a continuous block of memory. This can result in
+    slower data access (as you can't access the n'th element directly)
+    but it can use all available memory, as the list is dynamically
+    allocated.
+*/
+
+#include <iostream>
+
+/*  Node - an element of the list
+    It stores a value, and pointer to the next and previous node
+    in the list
+*/
 template <typename T>
 struct Node {
     T value;
@@ -19,12 +30,15 @@ struct Node {
 template <typename T>
 class LinkedList {
    private:
-    Node<T> *first;
-    Node<T> *last;
-    int _size;
+    Node<T> *first;  // The first node of the list ("head")
+    Node<T> *last;   // The last element of the list ("tail")
+    int _size;       // The number of elements
 
    public:
+    // Constructor
     explicit LinkedList() : first(nullptr), last(nullptr), _size(0) {}
+
+    // Destructor
     ~LinkedList() {
         Node<T> *curr = first;
         if (_size != 0) {
@@ -36,6 +50,7 @@ class LinkedList {
         }
     }
 
+    // Copy-Constructor
     LinkedList(const LinkedList &other)
         : first(nullptr), last(nullptr), _size(0) {
         Node<T> *curr = other.first;
@@ -47,7 +62,9 @@ class LinkedList {
         }
     }
 
+    // Adds an element at the start of the list
     void addFirst(const T &value) {
+        // Check if the list is not empty
         if (first) {
             Node<T> *add = new Node<T>(value);
             add->next = first;
@@ -64,7 +81,9 @@ class LinkedList {
         _size++;
     }
 
+    // Adds an element at the end of the list
     void addLast(const T &value) {
+        // Check if the list is not empty
         if (first) {
             Node<T> *add = new Node<T>(value);
             add->prev = last;
@@ -81,6 +100,7 @@ class LinkedList {
         _size++;
     }
 
+    // Removes the first element
     void removeFirst() {
         if (_size > 1) {
             Node<T> *aux = first->next;
@@ -99,6 +119,7 @@ class LinkedList {
         }
     }
 
+    // Removes the last element
     void removeLast() {
         if (_size == 1) {
             delete first;
@@ -119,8 +140,10 @@ class LinkedList {
         }
     }
 
+    // Returns the current number of elements
     int getSize() const { return _size; }
 
+    // Checks if the list contains an element
     bool hasElement(const T &element) const {
         Node<T> *curr = first;
         if (_size != 0) {
@@ -135,8 +158,9 @@ class LinkedList {
         return false;
     }
 
-    T getElement(int id) const {
-        if (id >= _size) {
+    // Returns the n'th element
+    T getElement(int n) const {
+        if (n >= _size) {
             return T(NULL);
         }
 
@@ -144,7 +168,7 @@ class LinkedList {
         int counter = 0;
         if (_size != 0) {
             do {
-                if (counter == id) {
+                if (counter == n) {
                     return curr->value;
                 } else {
                     counter++;
@@ -155,10 +179,13 @@ class LinkedList {
         return T(NULL);
     }
 
+    // Returns the first element
     T getHead() { return first->value; }
 
+    // Returns the last element
     T getTail() { return last->value; }
 
+    // Prints the list from tail to head (to show the double links)
     void printInverse() {
         Node<T> *curr = last;
         if (_size != 0) {
@@ -170,6 +197,7 @@ class LinkedList {
         std::cout << "\n";
     }
 
+    // Operator overload for output
     friend std::ostream &operator<<(std::ostream &output,
                                     const LinkedList &list) {
         Node<T> *curr = list.first;
