@@ -18,6 +18,9 @@ int main() {
     std::cout << "The list is " << list << "\nAnd its inverse is : ";
     list.printInverse();
 
+    LinkedList<int> otherList = list;
+    std::cout << "The other list is " << otherList << "\n";
+
     list.removeFirst();
     list.removeFirst();
     list.removeFirst();

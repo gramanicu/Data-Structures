@@ -1,9 +1,9 @@
 #include "../headers/ArrayList.h"
 
-int main() { 
+int main() {
     ArrayList<int> list(3);
 
-    for(int i=0; i<10; i++) {
+    for (int i = 0; i < 10; i++) {
         list.addLast(i);
     }
 
@@ -17,5 +17,5 @@ int main() {
     list.addLast(92);
     std::cout << list << "\n";
 
-    return 0; 
+    return 0;
 }

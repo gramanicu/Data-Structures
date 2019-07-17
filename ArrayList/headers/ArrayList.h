@@ -1,14 +1,14 @@
 #ifndef ARRAYLIST_H_
 #define ARRAYLIST_H_
 
-#include <iostream>
 #include <memory.h>
+#include <iostream>
 #define defaultSize 100
 
 template <typename T>
 class ArrayList {
    private:
-    T *elements;
+    T* elements;
     int _size;
     int _eFactor;
     int _cSize = 0;
@@ -16,7 +16,7 @@ class ArrayList {
     void resize() {
         _size += _eFactor;
         T* newArr = new T[_size];
-        memcpy(newArr, elements, (_size-_eFactor)*sizeof(T));
+        memcpy(newArr, elements, (_size - _eFactor) * sizeof(T));
         delete[] elements;
         elements = newArr;
     }
@@ -24,7 +24,7 @@ class ArrayList {
     void shiftRight() {
         _size += 1;
         T* newArr = new T[_size];
-        memcpy(newArr + 1, elements, (_size-1)*sizeof(T));
+        memcpy(newArr + 1, elements, (_size - 1) * sizeof(T));
         delete[] elements;
         elements = newArr;
     }
@@ -32,9 +32,9 @@ class ArrayList {
     void shiftLeft() {
         _size -= 1;
         T* newArr = new T[_size];
-        memcpy(newArr, elements + 1, _size*sizeof(T));
+        memcpy(newArr, elements + 1, _size * sizeof(T));
         delete[] elements;
-        elements = newArr; 
+        elements = newArr;
     }
 
    public:
@@ -44,29 +44,25 @@ class ArrayList {
         elements = new T[_size];
     }
 
-    ArrayList(const int size) : _size(size) { 
+    ArrayList(const int size) : _size(size) {
         elements = new T[_size];
-        _eFactor = _size; 
+        _eFactor = _size;
     }
 
-    ArrayList(const ArrayList& other) {
+    ArrayList(const ArrayList& other) {}
 
-    }
-    
-    ~ArrayList() {
-        delete[] elements;
-    }
+    ~ArrayList() { delete[] elements; }
 
     int size() const { return _cSize; }
 
-    void addFirst(const T& element) { 
+    void addFirst(const T& element) {
         shiftRight();
         elements[0] = element;
-        _cSize++; 
+        _cSize++;
     }
 
-    void addLast(const T& element) { 
-        if(_cSize+1>=_size) {
+    void addLast(const T& element) {
+        if (_cSize + 1 >= _size) {
             resize();
         }
 
@@ -74,14 +70,14 @@ class ArrayList {
         _cSize++;
     }
 
-    void removeFirst() { 
+    void removeFirst() {
         shiftLeft();
-        _cSize--; 
+        _cSize--;
     }
 
     void removeLast() {
-        elements[_cSize] = 0; 
-        _cSize--;     
+        elements[_cSize] = 0;
+        _cSize--;
     }
 
     bool isEmpty() const {
@@ -92,16 +88,17 @@ class ArrayList {
         }
     }
 
-    T getElement (const int id) const {
-        if(id<_size) {
+    T getElement(const int id) const {
+        if (id < _size) {
             return elements[id];
         } else {
             return 0;
         }
     }
 
-    friend std::ostream& operator<<(std::ostream& output, const ArrayList& list) {
-        for(int i=0; i<list.size(); i++) {
+    friend std::ostream& operator<<(std::ostream& output,
+                                    const ArrayList& list) {
+        for (int i = 0; i < list.size(); i++) {
             output << list.getElement(i) << " ";
         }
         return output;
