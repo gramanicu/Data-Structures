@@ -6,7 +6,7 @@
 # Compilation variables
 CC = g++
 CFLAGS = -Wno-unused-parameter -Wall -Wextra -pedantic -g -std=c++14
-EXE = LinkedList
+EXE = Stack
 SRC = $(wildcard */*.cpp)
 OBJ = $(SRC:.cpp=.o)
 
@@ -22,12 +22,12 @@ build: $(OBJ)
 	$(CC) -o $@ -c $< $(CFLAGS) 
 
 # Executes the binary
-run:clean build
+run: clean build
 	./$(EXE)
 
 # Deletes the binary and object files
 clean:
-	rm -f $(EXE) $(OBJ) LinkedList.zip
+	rm -f $(EXE) $(OBJ) Stack.zip
 	echo "Deleted the binary and object files"
 
 # Automatic coding style, in my personal style
@@ -48,6 +48,6 @@ gitignore:
 	echo "Updated .gitignore"
 	
 # Creates an archive of the project
-pack:clean
-	zip -FSr LinkedList.zip *
+pack: clean
+	zip -FSr Stack.zip *
 
