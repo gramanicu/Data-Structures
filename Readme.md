@@ -1,5 +1,3 @@
-# Exercitii Structuri de Date
+# Data Structures
 
-In acest repository sunt (sau vor fi) implementate marea majoritate a structurilor de date predate la cursul de SD.
-
-Commenturile atasate commiturilor vor fi scrise in engleza.
+This project contains the majority of the data structures studied on my first year of computer science.
