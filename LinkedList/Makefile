@@ -36,8 +36,8 @@ beauty:
 	clang-format -i -style=file */*.h
 
 # Checks the memory for leaks
-MFLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes
-memory:build
+MFLAGS = --leak-check=full --show-leak-kinds=all --track-origins=yes --keep-stacktraces=alloc-and-free
+memory:clean build
 	valgrind $(MFLAGS) ./$(EXE)
 
 # Adds and updates gitignore rules

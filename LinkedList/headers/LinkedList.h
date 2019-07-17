@@ -9,7 +9,7 @@ struct Node {
     Node<T>* next;
     Node<T>* prev;
 
-    Node(T value) {
+    explicit Node(T value) {
         this->value = value;
         next = nullptr;
         prev = nullptr;
@@ -24,36 +24,46 @@ class LinkedList {
     int _size;
 
    public:
-    LinkedList() : first(nullptr), last(nullptr), _size(0){};
-    ~LinkedList() {}
+    explicit LinkedList() : first(nullptr), last(nullptr), _size(0){};
+    ~LinkedList() {
+        Node<T> *curr = first;
+        if(_size != 0) {
+            do {
+                Node<T> *aux = curr->next;
+                delete curr;
+                curr = aux;
+            } while (curr!=nullptr);
+        }
+    }
+
     LinkedList(const LinkedList& other) {}
 
     void addFirst(const T& value) {
-        Node<T> *add = new Node<T>(value);
-
         if(first) {
+            Node<T> *add = new Node<T>(value);
             add->next = first;
             add->prev = nullptr;
             first->prev = add;
             first = add;
         } else {
+            Node<T> *add = new Node<T>(value);
             first = add;
-            first->next = nullptr;
-            first->prev = nullptr;
-            last = first;
+            add->prev = nullptr;
+            add->next = nullptr;
+            last = add;
         }
         _size++;
     }
 
     void addLast(const T& value) {
-        Node<T> *add = new Node<T>(value);
-
         if(first) {
+            Node<T> *add = new Node<T>(value);
             add->prev = last;
             add->next = nullptr;
             last->next = add;
             last = add;
         } else {
+            Node<T> *add = new Node<T>(value);
             first = add;
             first->next = nullptr;
             first->prev = nullptr;
@@ -69,6 +79,7 @@ class LinkedList {
             first = aux;
             first->prev = nullptr;
         } else {
+            delete first;
             first = nullptr;
             last = nullptr;
             _size = 0;
@@ -82,6 +93,7 @@ class LinkedList {
 
     void removeLast() {
         if(_size==1) {
+            delete first;
             first = nullptr;
             last = nullptr;
             _size = 0;
