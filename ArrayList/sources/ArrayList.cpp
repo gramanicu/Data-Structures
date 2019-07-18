@@ -1,3 +1,4 @@
+// Copyright Grama Nicolae 2019
 #include "../headers/ArrayList.h"
 
 // Test for the ArrayList

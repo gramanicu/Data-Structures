@@ -1,3 +1,4 @@
+// Copyright Grama Nicolae 2019
 #ifndef LINKEDLIST_H_
 #define LINKEDLIST_H_
 

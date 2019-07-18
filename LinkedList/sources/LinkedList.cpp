@@ -1,3 +1,4 @@
+// Copyright Grama Nicolae 2019
 #include "../headers/LinkedList.h"
 
 // Test for the LinkedList

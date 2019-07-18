@@ -1,3 +1,4 @@
+// Copyright Grama Nicolae 2019
 #ifndef ARRAYLIST_H_
 #define ARRAYLIST_H_
 /*  This is a implementation of an array list. The data is
