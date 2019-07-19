@@ -4,12 +4,64 @@
 
 #include <iostream>
 #include <list>
+#include <queue>
 #include <vector>
+
+std::ostream& operator<<(std::ostream& output, const std::list<int>& list) {
+    for (auto& i : list) {
+        output << i << " ";
+    }
+    return output;
+}
 
 class Graph {
    private:
     std::vector<std::list<std::pair<int, int>>> adjency;
     int nodeCount;
+
+    // Dijkstra algorithm for finding the shortest path
+    std::list<int> Dijkstra(uint first, uint second, uint* distance = 0) const {
+        int* distances = new int[nodeCount]();
+        bool* queued = new bool[nodeCount]();
+        std::vector<std::list<int>> paths;
+
+        for (int i = 0; i < nodeCount; i++) {
+            distances[i] = 0;
+            queued[i] = false;
+            std::list<int> aux;
+            aux.push_back(i);
+            paths.push_back(aux);
+        }
+
+        std::queue<int> q;
+        q.push(first);
+        while (!q.empty()) {
+            for (auto& i : adjency[q.front()]) {
+                // Check if the node was queued
+                if (!queued[i.first]) {
+                    q.push(i.first);
+                    queued[i.first] = true;
+                }
+
+                int newDist = distances[q.front()] + i.second;
+                if ((distances[i.first] == 0 || distances[i.first] > newDist) &&
+                    i.first != int(first)) {
+                    distances[i.first] = newDist;
+                    paths[i.first] = paths[q.front()];
+                    paths[i.first].push_back(i.first);
+                }
+            }
+            q.pop();
+        }
+
+        if(distance!=nullptr) {
+            *distance = distances[second];
+        }
+
+        delete[] distances;
+        delete[] queued;
+        return paths[second];
+    }
 
    public:
     Graph() : nodeCount(0) {}
@@ -67,8 +119,8 @@ class Graph {
     }
 
     void removeAllLinks(const uint node) {
-        for(int i = 0 ; i < nodeCount; i++) {
-            if(i != int(node)) {
+        for (int i = 0; i < nodeCount; i++) {
+            if (i != int(node)) {
                 unlinkBoth(node, i);
             }
         }
@@ -93,26 +145,33 @@ class Graph {
 
     int nodesCount() const { return nodeCount; }
 
-    // Dijkstra algorithm for finding the shortest path
-    int distance(uint first, uint second) const {
-        return 0;
-    } 
-
-    int connectedComponents() {
-        return 0;
+    std::list<int> getPath(const uint first, const uint second) const {
+        if(first == second) {
+            std::list<int> p;
+            p.push_back(first);
+            return p;
+        }
+        return Dijkstra(first, second);
     }
+
+    int getDistance(const uint first, const uint second) const {
+        if(first == second) {
+            return 0;
+        }
+        uint distance = 0;
+        Dijkstra(first, second, &distance);
+        return int(distance);
+    }
+
+    int connectedComponents() const { return 0; }
 
     void topologicalSort() {
         // If there is one cycle in the graph, it can't be sorted topologically
     }
 
-    bool bipartiteGraph() {
-        return false;
-    }
+    bool bipartiteGraph() { return false; }
 
-    bool hamiltonianGraph() {
-        return false;
-    }
+    bool hamiltonianGraph() { return false; }
 
     friend std::ostream& operator<<(std::ostream& output, const Graph& g) {
         int size = g.nodeCount;
