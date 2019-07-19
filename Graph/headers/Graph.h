@@ -84,7 +84,11 @@ class Graph {
     Graph() : nodeCount(0) {}
 
     // Copy-Constructor
-    Graph(const Graph& other) {}
+    Graph(const Graph& other) : nodeCount(other.nodeCount) {
+        for(auto& i : other.adjency) {
+            adjency.push_back(i);
+        }
+    }
 
     // Destructor
     ~Graph() {}
@@ -189,22 +193,33 @@ class Graph {
 
     // Returns the shortest path from the first node to the second (the
     // output has the following format "n1 n2 n3 ... ", with a space at the end)
+    // If there is no path, it will return -1
     std::list<int> getPath(const uint first, const uint second) const {
         if (first == second) {
             std::list<int> p;
             p.push_back(first);
             return p;
         }
-        return Dijkstra(first, second);
+        std::list<int> path = Dijkstra(first, second);
+        if(path.size() == 1) {
+            std::list<int> p;
+            p.push_back(-1);
+            return p;
+        } else {
+            return path;
+        }
     }
 
-    // Returns the minimal distance between two nodes
+    // Returns the minimal distance between two nodes (and -1 if there is none)
     int getDistance(const uint first, const uint second) const {
         if (first == second) {
             return 0;
         }
         uint distance = 0;
         Dijkstra(first, second, &distance);
+        if(distance==0) {
+            return -1;
+        }
         return int(distance);
     }
 

@@ -19,5 +19,29 @@ int main() {
     std::cout << "Shortest path from 1 to 5 is : " << g.getPath(1, 5)
               << " with the length of " << g.getDistance(1, 5) << "\n";
 
+    Graph other = g;
+    
+    std::cout << other << "\n";
+    std::cout << "Shortest path from 1 to 5 is : " << other.getPath(1, 5)
+              << " with the length of " << other.getDistance(1, 5) << "\n";
+
+    g.removeAllLinks(1);
+    g.removeAllLinks(2);
+    g.removeAllLinks(3);
+    g.removeAllLinks(4);
+    g.removeAllLinks(5);
+    g.removeAllLinks(6);
+
+    std::cout << g << "\n";
+    std::cout << "Shortest path from 1 to 5 is : " << g.getPath(1, 5)
+              << " with the length of " << g.getDistance(1, 5) << "\n";
+    
+    std::cout << other << "\n";
+    std::cout << "Shortest path from 1 to 5 is : " << other.getPath(1, 5)
+              << " with the length of " << other.getDistance(1, 5) << "\n";
+
+    std::cout << "\nThe second time we print Graph g, we should find no path\n";
+    std::cout << "However, the Graph other should remain unchanged\n";
+
     return 0;
 }
