@@ -14,8 +14,7 @@
 #include <queue>
 #include <vector>
 
-/*
-    This is a operator overload for a list of integers, used by the "getPath"
+/*  This is a "<<" operator overload for a list of integers, used by the "getPath"
     method.
 */
 std::ostream& operator<<(std::ostream& output, const std::list<int>& list) {
