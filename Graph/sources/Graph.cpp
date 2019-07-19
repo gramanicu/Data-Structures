@@ -1,5 +1,7 @@
 #include "../headers/Graph.h"
 
+// Test graph functionality
+
 int main() {
     Graph g;
     g.addNodes(8);
