@@ -12,13 +12,25 @@
 #include <iostream>
 #include <list>
 #include <queue>
+#include <stack>
 #include <vector>
+#include <algorithm>
 
-/*  This is a "<<" operator overload for a list of integers, used by the "getPath"
-    method.
+/*  This is a "<<" operator overload for a list of integers, used by the
+   "getPath" method.
 */
 std::ostream& operator<<(std::ostream& output, const std::list<int>& list) {
     for (auto& i : list) {
+        output << i << " ";
+    }
+    return output;
+}
+
+/*  This is a "<<" operator overload for a list of integers, used by the
+   "topologicalSort" method.
+*/
+std::ostream& operator<<(std::ostream& output, const std::vector<int>& vector) {
+    for (auto& i : vector) {
         output << i << " ";
     }
     return output;
@@ -29,6 +41,37 @@ class Graph {
     // The adjency list
     std::vector<std::list<std::pair<int, int>>> adjency;
     int nodeCount;  // The number of nodes in the graph
+
+    // Algorithm to detect cylces (taken from www.geeksforgeeks.org)
+    bool isCyclicUtil(const int n, bool visited[], bool* recStack) {
+        if (!visited[n]) {
+            visited[n] = true;
+            recStack[n] = true;
+
+            for (auto& i : adjency[n]) {
+                if (!visited[i.first] &&
+                    isCyclicUtil(i.first, visited, recStack)) {
+                    return true;
+                } else if (recStack[i.first]) {
+                    return true;
+                }
+            }
+        }
+        recStack[n] = false;
+        return false;
+    }
+
+    bool isCyclic() {
+        bool* visited = new bool[nodeCount]();
+        bool* recStack = new bool[nodeCount]();
+
+        for (int i = 0; i < nodeCount; i++) {
+            if (isCyclicUtil(i, visited, recStack)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /*  Dijkstra algorithm for finding the shortest path between two nodes.
         As it would need to return two values (the shortest path and the
@@ -85,7 +128,7 @@ class Graph {
 
     // Copy-Constructor
     Graph(const Graph& other) : nodeCount(other.nodeCount) {
-        for(auto& i : other.adjency) {
+        for (auto& i : other.adjency) {
             adjency.push_back(i);
         }
     }
@@ -111,6 +154,7 @@ class Graph {
     // distance
     void link(const uint first, const uint second, const uint distance = 1) {
         if (distance == 0) return;
+
         if (first != second && first < uint(nodeCount) &&
             second < uint(nodeCount)) {
             // Check if the link exist (if true, just update the distance)
@@ -201,7 +245,7 @@ class Graph {
             return p;
         }
         std::list<int> path = Dijkstra(first, second);
-        if(path.size() == 1) {
+        if (path.size() == 1) {
             std::list<int> p;
             p.push_back(-1);
             return p;
@@ -217,7 +261,7 @@ class Graph {
         }
         uint distance = 0;
         Dijkstra(first, second, &distance);
-        if(distance==0) {
+        if (distance == 0) {
             return -1;
         }
         return int(distance);
@@ -225,11 +269,109 @@ class Graph {
 
     // Returns the number of connected components
     // ( "componente conexe" in romanian)
-    int connectedComponents() const { return 0; }
+    int connectedComponents() const {
+        int connected = 0;
+        bool* visited = new bool[nodeCount]();
+
+        // Go through each node in the graph
+        for (int i = 0; i < nodeCount; i++) {
+            if (!visited[i]) {
+                connected++;
+                // Start a dfs from the current node
+                std::stack<int> s;
+
+                // Visit the node
+                visited[i] = true;
+                s.push(i);
+
+                // DFS
+                while (!s.empty()) {
+                    int topNode = s.top();
+                    int neighbor = -1;
+
+                    // Search for the first unvisited neighbor
+                    for (auto& j : adjency[topNode]) {
+                        if (!visited[j.first]) {
+                            neighbor = j.first;
+                            break;
+                        }
+                    }
+
+                    // If there is a neighbor
+                    if (neighbor != -1) {
+                        visited[neighbor] = true;
+                        s.push(neighbor);
+                    } else {
+                        s.pop();
+                    }
+                }
+            }
+        }
+
+        delete[] visited;
+        return connected;
+    }
 
     // Sorts the graph topologically
     void topologicalSort() {
         // If there is one cycle in the graph, it can't be sorted topologically
+        if (isCyclic()) {
+            return;
+        } else {
+            bool* visited = new bool[nodeCount]();
+            int* parent = new int[nodeCount]();
+            int* dTime = new int[nodeCount]();
+            std::vector<int> fTime;
+            int tCount = 0;
+
+            for(int i = 0; i<nodeCount; i++) {
+                fTime.push_back(int());
+            }
+
+            // For each node in graph
+            for (int i = 0; i < nodeCount; i++) {
+                // If the node wasn't visited already, do a DFS from it
+                if (!visited[i]) {
+                    std::stack<int> s;
+                    s.push(i);
+
+                    // Visit node
+                    tCount++;
+                    dTime[i] = tCount;
+                    visited[i] = true;
+
+                    // While the stack isn't empty
+                    while (!s.empty()) {
+                        int topNode = s.top();
+                        int neighbor = -1;
+
+                        for (auto& j : adjency[topNode]) {
+                            if (!visited[j.first]) {
+                                neighbor = j.first;
+                                break;
+                            }
+                        }
+
+                        // If there is a unvisited neighbor
+                        if (neighbor != -1) {
+                            parent[neighbor] = topNode;
+                            // Visit the node
+                            tCount++;
+                            dTime[neighbor] = tCount;
+                            visited[neighbor] = true;
+                            s.push(neighbor);
+                        } else {
+                            tCount++;
+                            fTime[topNode] = tCount;
+                            s.pop();
+                        }
+                    }
+                }
+            }
+
+            std::sort(fTime.begin(), fTime.end(), std::greater<int>());
+            std::cout << "Graph in topological order is :\n" << fTime << "\n\n";
+        }
     }
 
     // Checks if the graph is bipartite
@@ -238,9 +380,9 @@ class Graph {
     // Checks if the graph is hamiltonian
     bool hamiltonianGraph() { return false; }
 
-    /*  Operator overload for output. It will print the adjency MATRIX of the graph.
-        Be carefull using this function, as it uses a lot of resources. For a graph
-        of 1000 nodes it can use approximately 4GB of RAM.
+    /*  Operator overload for output. It will print the adjency MATRIX of the
+       graph. Be carefull using this function, as it uses a lot of resources.
+       For a graph of 1000 nodes it can use approximately 4GB of RAM.
     */
     friend std::ostream& operator<<(std::ostream& output, const Graph& g) {
         int size = g.nodeCount;
