@@ -9,12 +9,12 @@
     as it is more memory efficient, especially for "sparse" graphs.
 */
 
+#include <algorithm>
 #include <iostream>
 #include <list>
 #include <queue>
 #include <stack>
 #include <vector>
-#include <algorithm>
 
 /*  This is a "<<" operator overload for a list of integers, used by the
    "getPath" method.
@@ -27,11 +27,12 @@ std::ostream& operator<<(std::ostream& output, const std::list<int>& list) {
 }
 
 /*  This is a "<<" operator overload for a list of integers, used by the
-   "topologicalSort" method.
+    "topologicalSort" method.
 */
-std::ostream& operator<<(std::ostream& output, const std::vector<int>& vector) {
+std::ostream& operator<<(std::ostream& output,
+                         const std::vector<std::pair<int, int>>& vector) {
     for (auto& i : vector) {
-        output << i << " ";
+        output << i.second << "(" << i.first << ") ";
     }
     return output;
 }
@@ -41,6 +42,12 @@ class Graph {
     // The adjency list
     std::vector<std::list<std::pair<int, int>>> adjency;
     int nodeCount;  // The number of nodes in the graph
+
+    // Comparision function for the topological sort
+    static bool sortInRev(const std::pair<int, int>& a,
+                          const std::pair<int, int>& b) {
+        return (a.first > b.first);
+    }
 
     // Algorithm to detect cylces (taken from www.geeksforgeeks.org)
     bool isCyclicUtil(const int n, bool visited[], bool* recStack) {
@@ -324,7 +331,7 @@ class Graph {
             std::vector<int> fTime;
             int tCount = 0;
 
-            for(int i = 0; i<nodeCount; i++) {
+            for (int i = 0; i < nodeCount; i++) {
                 fTime.push_back(int());
             }
 
@@ -369,8 +376,16 @@ class Graph {
                 }
             }
 
-            std::sort(fTime.begin(), fTime.end(), std::greater<int>());
-            std::cout << "Graph in topological order is :\n" << fTime << "\n\n";
+            std::vector<std::pair<int, int>> finalOrder;
+            int count = 0;
+            for (auto& i : fTime) {
+                finalOrder.push_back(std::make_pair(i, count));
+                count++;
+            }
+
+            std::sort(finalOrder.begin(), finalOrder.end(), sortInRev);
+            std::cout << "Graph in topological order is :\n"
+                      << finalOrder << "\n\n";
         }
     }
 

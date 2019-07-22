@@ -4,17 +4,17 @@
 
 int main() {
     Graph g;
-    g.addNodes(12);
-    g.linkBoth(0, 1);
-    g.linkBoth(0, 2);
-    g.linkBoth(1, 2);
-    g.linkBoth(2, 7);
-    g.linkBoth(3, 4);
-    g.linkBoth(3, 5);
-    g.linkBoth(3, 6);
-    g.linkBoth(4, 5);
-    g.linkBoth(6, 8);
-    g.linkBoth(9, 10);
+    g.addNodes(9);
+    
+    g.link(0, 1);
+    g.link(1, 2);
+    g.link(0, 3);
+    g.link(3, 2);
+    g.link(5, 6);
+    g.link(5, 7);
+    g.link(5, 3);
+    g.link(6, 7);
+    g.link(8, 7);
 
     std::cout << "There are " << g.connectedComponents()
               << " connected components\n";
