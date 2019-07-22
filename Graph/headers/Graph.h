@@ -49,6 +49,55 @@ class Graph {
         return (a.first > b.first);
     }
 
+    // Check if the node already exist in chain
+    bool newInChain(const std::list<int> &chain, const int node) {
+        for(auto& i : chain) {
+            if(i == node) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool buildChains(std::list<int> &chain, std::list<std::list<int>>* all) {
+        if(int(chain.size()) == nodeCount) {
+            int start = chain.front();
+            int end = chain.back();
+
+            if(isLink(start, end)) {
+                all->push_back(chain);
+                return true;
+            }
+        } else {
+            for(int i=0; i<nodeCount; i++) {
+                int end = chain.back();
+                if(isLink(i, end) && newInChain(chain, i)) {
+                    chain.push_back(i);
+                    buildChains(chain, all);
+                    chain.pop_back();
+                }
+            }
+        }
+        return false;
+    }
+
+    /*  Checks if the graph is hamiltonian and all its cycles
+        A hamiltonian graph contains a hamiltonian cycle (it passes through
+        each node of the graph just one time, and it returns to the starting
+        node). This algorithm uses the backtracking method.
+    */
+    std::list<std::list<int>> hamiltonianGraph() { 
+        std::list<int> chain;
+        std::list<std::list<int>> allChains;
+
+        int source = 0;
+        chain.push_back(source);
+        buildChains(chain, &allChains);
+
+        return allChains; 
+    }
+
+
     // Algorithm to detect cylces (taken from www.geeksforgeeks.org)
     bool isCyclicUtil(const int n, bool visited[], bool* recStack) {
         if (!visited[n]) {
@@ -327,8 +376,10 @@ class Graph {
     }
 
     /*  By doing a topological sort, we linearise the graph. By starting in the
-        first node of the topologically sorted graph, we can go through all of it
-        without ever repeating a node (no returns, we move in 1 direction).
+        first node of the topologically sorted graph, we can go through all of 
+        it without ever repeating a node (no returns, we move in 1 direction).
+        But, it doesn't necessarily mean we go through all the nodes (of the 
+        original graph) just one time.
     */
     void topologicalSort() {
         // If there is one cycle in the graph, it can't be sorted topologically
@@ -442,8 +493,27 @@ class Graph {
         return true; 
     }
 
-    // Checks if the graph is hamiltonian
-    bool hamiltonianGraph() { return false; }
+    // Returns if the graph is hamiltonian
+    bool isHamiltonian() {
+        if(hamiltonianGraph().size() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Returns the number of hamiltonian cycles
+    int numberOfHCycles() {
+        return hamiltonianGraph().size();
+    }
+
+    // Prints all hamiltonian cycles in the graph
+    void printHCycles() {
+        std::list<std::list<int>> cycles = hamiltonianGraph();
+        for(auto& i : cycles) {
+            std::cout << i << "\n";
+        }
+    }
 
     /*  Operator overload for output. It will print the adjency MATRIX of the
        graph. Be carefull using this function, as it uses a lot of resources.
