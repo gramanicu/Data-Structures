@@ -74,9 +74,14 @@ class Graph {
 
         for (int i = 0; i < nodeCount; i++) {
             if (isCyclicUtil(i, visited, recStack)) {
+                delete[] visited;
+                delete[] recStack;
                 return true;
             }
         }
+
+        delete[] visited;
+        delete[] recStack;
         return false;
     }
 
@@ -386,11 +391,18 @@ class Graph {
             std::sort(finalOrder.begin(), finalOrder.end(), sortInRev);
             std::cout << "Graph in topological order is :\n"
                       << finalOrder << "\n\n";
+
+            delete[] visited;
+            delete[] parent;
+            delete[] dTime;
         }
     }
 
     // Checks if the graph is bipartite
-    bool bipartiteGraph() { return false; }
+    bool bipartiteGraph() {
+
+        return false; 
+    }
 
     // Checks if the graph is hamiltonian
     bool hamiltonianGraph() { return false; }
