@@ -32,6 +32,7 @@ int main() {
 
     std::cout << "Is graph G hamiltonian ? : " << g.isHamiltonian() << "\n";
     std::cout << "It has " << g.numberOfHCycles() << " cycles\n";
+    std::cout << "The graph G is" << g << "\n";
 
     Graph h;
     g.addNodes(4);
