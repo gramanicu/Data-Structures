@@ -279,8 +279,10 @@ class Graph {
         return int(distance);
     }
 
-    // Returns the number of connected components
-    // ( "componente conexe" in romanian)
+    /*  Returns the number of connected components
+        Connected components are subgraphs made only with nodes
+        that can be reached from one another (a path exists)
+    */
     int connectedComponents() const {
         int connected = 0;
         bool* visited = new bool[nodeCount]();
@@ -324,7 +326,10 @@ class Graph {
         return connected;
     }
 
-    // Sorts the graph topologically
+    /*  By doing a topological sort, we linearise the graph. By starting in the
+        first node of the topologically sorted graph, we can go through all of it
+        without ever repeating a node (no returns, we move in 1 direction).
+    */
     void topologicalSort() {
         // If there is one cycle in the graph, it can't be sorted topologically
         if (isCyclic()) {
@@ -398,10 +403,43 @@ class Graph {
         }
     }
 
-    // Checks if the graph is bipartite
+    /*  Checks if the graph is bipartite
+        This is done by starting a BFS in a node (0 in this case), and give
+        each encountered node a level (1 greater than the "parent"). In this
+        case, we just keep count if they are odd or even. If we find two
+        connected nodes that are both even/odd, the graph is not bipartite.
+        If we finish the BFS without encountering this situation, the graph
+        is bipartite.
+    */
     bool bipartiteGraph() {
+        int source = 0;
+        int *level = new int[nodeCount](); // 2 - odd, 1 - even, 0 - undefined
+        bool *visited = new bool[nodeCount]();
 
-        return false; 
+        std::queue<int> q;
+        q.push(source);
+
+        // BFS
+        while(!q.empty()) {
+            int n = q.front();
+            visited[n] = true;
+            q.pop();
+
+            for(auto& i : adjency[n]) {
+                if(level[i.first] == 0) {
+                    // If the "n" node is odd, his neighbors are even etc.
+                    level[i.first] = (level[n] == 2) ? 1 : 2;
+                    q.push(i.first);
+                } else if (level[n] == level[i.first]) {
+                    // If two consecutive nodes have the same level, not bipartite
+                    return false;
+                }
+            }
+        }
+ 
+        delete[] level;
+        delete[] visited;
+        return true; 
     }
 
     // Checks if the graph is hamiltonian
