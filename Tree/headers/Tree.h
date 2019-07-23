@@ -1,0 +1,101 @@
+// Copyright 2019 Grama Nicolae
+#ifndef TREE_H_
+#define TREE_H_
+
+#include <iostream>
+#include <queue>
+#include <vector>
+
+template <typename T>
+std::ostream& operator<<(std::ostream& output, const std::vector<T> v) {
+    for (auto& i : v) {
+        output << i << " ";
+    }
+    return output;
+}
+
+template <typename T>
+class Tree {
+   private:
+    class Node {
+       private:
+        Node* left;
+        Node* right;
+        T data;
+
+       public:
+        Node(const T& data) : left(nullptr), right(nullptr), data(data) {};
+        ~Node() {
+            delete left;
+            delete right;
+        }
+
+        void setData(const T& data) { this->data = data; }
+
+        T getData() const { return data; }
+
+        void setLeft(const T& data) { left = new Node(data); }
+
+        void setRight(const T& data) { right = new Node(data); }
+
+        Node* getLeft() { return left; }
+
+        Node* getRight() { return right; }
+    };
+
+    int size;
+    Node* root;
+
+   public:
+    Tree() : size(0), root(nullptr) {}
+    ~Tree() { delete root; }
+
+    void insert(const T& data) {
+        if (size == 0) {
+            root = new Node(data);
+            root->setLeft(T());
+            root->setRight(T());
+            size++;
+        } else {
+            std::queue<Node*> q;
+            q.push(root->getLeft());
+            q.push(root->getRight());
+            
+            while (!q.empty()) {
+                Node* curr = q.front();
+                if (curr->getData() == T()) {
+                    curr->setData(data);
+                    curr->setLeft(T());
+                    curr->setRight(T());
+
+                    size++;
+                    return;
+                } else {
+                    q.pop();
+                    q.push(curr->getLeft());
+                    q.push(curr->getRight());
+                }
+            }
+        }
+    }
+
+    std::vector<T> traversal() {
+        std::vector<T> v;
+        std::queue<Node*> q;
+        q.push(root);
+
+        while (!q.empty()) {
+            Node* curr = q.front();
+            if (curr->getData() != T()) {
+                v.push_back(curr->getData());
+                q.push(curr->getLeft());
+                q.push(curr->getRight());
+            }
+            q.pop();
+        }
+
+        return v;
+    }
+};
+
+#endif  // TREE_H_
