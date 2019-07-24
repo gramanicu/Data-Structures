@@ -1,3 +1,4 @@
+// Copyright 2019 Grama Nicolae
 #include "../headers/Tree.h"
 
 int main() { 
