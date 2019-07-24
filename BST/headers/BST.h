@@ -2,6 +2,15 @@
 #ifndef BST_H_
 #define BST_H_
 
+/*
+    A binary search tree is a optimized binary tree. Because of the
+    way the nodes are inserted, the search is faster than in a simple
+    binary tree. The data stored in the nodes is called keys. For each
+    node, it's left child has a key smaller than his, and the right one
+    has a key bigger. So, the smallest element in the tree is in the
+    bottom left, and the biggest one is located on the bottom right.
+*/
+
 #include <iostream>
 #include <queue>
 #include <vector>
@@ -9,6 +18,10 @@
 template <typename T>
 class BST {
    private:
+    /*  A class for the nodes
+        It is pretty much the same the same node structure from the
+        simple binary tree.
+     */
     class Node {
        private:
         Node* left;
@@ -31,13 +44,19 @@ class BST {
         Node* getLeft() { return left; }
         Node* getRight() { return right; }
 
-        Node* cGetLeft() const {return left;};
-        Node* cGetRight() const {return right;};
+        Node* cGetLeft() const { return left; };
+        Node* cGetRight() const { return right; };
     };
 
+    // The root of the tree
     Node* root;
+    // The number of nodes stored
     int size;
 
+    /*  This method will return a list with all the children of the specified
+        node. This is used when deleting a node, to reinsert it's children
+        back in the BST.
+    */
     static std::vector<T> allChildren(const Node* node) {
         std::vector<T> out;
 
@@ -55,9 +74,12 @@ class BST {
     }
 
    public:
+    // Constructor
     BST() : root(nullptr), size(0){};
+    // Destructor
     ~BST() { delete root; }
 
+    // Insert a node in the BST
     void insert(const T& key, Node* node = nullptr) {
         if (node == nullptr) {
             if (size == 0) {
@@ -85,6 +107,8 @@ class BST {
         }
     }
 
+    // Deletes a node from the BST
+    // (! this method generates some memory problems !)
     void remove(const T& key, Node* node = nullptr) {
         if (size == 0) {
             return;
@@ -99,7 +123,7 @@ class BST {
                     std::vector<T> aux = allChildren(node->getLeft());
                     toInsert.insert(toInsert.end(), aux.begin(), aux.end());
 
-                    if(node != root) { 
+                    if (node != root) {
                         delete node->getLeft();
                     }
                 }
@@ -107,12 +131,12 @@ class BST {
                 if (node->getRight()->getData() != T()) {
                     std::vector<T> aux = allChildren(node->getRight());
                     toInsert.insert(toInsert.end(), aux.begin(), aux.end());
-                    if(node != root) {
+                    if (node != root) {
                         delete node->getRight();
                     }
                 }
 
-                if(node == root) {
+                if (node == root) {
                     delete root->getLeft();
                     delete root->getRight();
                 }
@@ -131,6 +155,7 @@ class BST {
         }
     }
 
+    // Search for a node in the BST
     bool search(const T& key, Node* node = nullptr) const {
         if (size == 0) {
             return false;
@@ -155,6 +180,7 @@ class BST {
         }
     }
 
+    // Returns the smallest key in the BST
     T getMin() const {
         if (size == 0) {
             return T();
@@ -167,6 +193,7 @@ class BST {
         }
     }
 
+    // Returns the biggest key in the BST
     T getMax() const {
         if (size == 0) {
             return T();
@@ -179,8 +206,11 @@ class BST {
         }
     }
 
+    // Returns the number of keys in the BST
     int getSize() const { return size; }
 
+    // Prints all the elements stored in the BST (in "preorder" - current node
+    // left child, right child)
     friend std::ostream& operator<<(std::ostream& output, const BST& tree) {
         std::vector<T> v;
         std::queue<Node*> q;
