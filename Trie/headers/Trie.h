@@ -8,7 +8,7 @@
     strings as keys and any type T as values. It has a better time complexity
     than a BST and similar to a hastable. 
 
-    It's advantages are the advanced searches, such as prefix search or
+    Its advantages are the advanced searches, such as prefix search or
     searching for keys when they are misspelled (autocomplete).
 
     The dissadvantage of this structure is it's memory usage, which can vary a
